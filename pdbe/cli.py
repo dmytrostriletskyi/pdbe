@@ -2,13 +2,20 @@
 CLI manager.
 """
 import argparse
+import os
 import sys
-
 from typing import List, Optional, Tuple
 
+from pdbe import put_import_pdb
 
-def handle_file_argument(set_value):
-    pass
+
+def handle_file_argument(set_value: str) -> None:
+    """
+    Put import pdb statement under each function definition.
+    """
+    call_pdbe_path = os.getcwd()
+    file_path = call_pdbe_path + '/' + set_value
+    put_import_pdb(file_path)
 
 
 def handle_dir_argument(set_value):
