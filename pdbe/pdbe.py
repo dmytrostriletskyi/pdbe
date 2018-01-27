@@ -9,7 +9,7 @@ def is_function_sign_in_line(line: str) -> bool:
     """
     Check if line contains function declaration.
     """
-    return 'def ' in line and '(' in line and '):' in line
+    return 'def ' in line and '(' in line and '):' in line or ') ->' in line
 
 
 def get_function_indent(line: str) -> int:
