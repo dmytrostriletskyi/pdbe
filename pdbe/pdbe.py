@@ -41,7 +41,7 @@ def formatted_to_pdb_statement_line(line: str) -> str:
 
 def put_import_pdb(file_path: str) -> None:
     """
-    Put import pdb statement
+    Put import pdb statement.
 
     It needs to be placed after function declaration.
     """

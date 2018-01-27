@@ -3,7 +3,7 @@
 Your favorite debugger to everywhere!
 
 [![Release](https://img.shields.io/github/release/dmytrostriletskyi/acg.svg)](https://github.com/dmytrostriletskyi/acg/releases)
-![Build](https://api.travis-ci.org/dmytrostriletskyi/pdbe.svg?branch=master)
+![Build](https://api.travis-ci.org/dmytrostriletskyi/pdbe.svg?branch=develop)
 ![Python3](https://img.shields.io/badge/Python-3.5-brightgreen.svg)
 ![Python3](https://img.shields.io/badge/Python-3.6-brightgreen.svg)
 

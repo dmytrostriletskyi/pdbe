@@ -2,8 +2,9 @@
 CLI manager.
 """
 import argparse
-import os
 import sys
+from os import getcwd, listdir, walk
+from os.path import isfile, join
 from typing import List, Optional, Tuple
 
 from pdbe import put_import_pdb
@@ -11,19 +12,60 @@ from pdbe import put_import_pdb
 
 def handle_file_argument(set_value: str) -> None:
     """
-    Put import pdb statement under each function definition.
+    Handle put import pdb statement under each function definition within file.
     """
-    call_pdbe_path = os.getcwd()
+    call_pdbe_path = getcwd()
     file_path = call_pdbe_path + '/' + set_value
     put_import_pdb(file_path)
 
 
 def handle_dir_argument(set_value):
-    pass
+    """
+    Handle put import pdb statement under each function definition within all files in directory.
+    """
+    if set_value == '.':
+        set_value = ''
+
+    call_pdbe_path = getcwd()
+    directory_path = call_pdbe_path + '/' + set_value
+
+    python_files_in_directory = []
+
+    try:
+        for file in listdir(directory_path):
+            file_path = join(directory_path, file)
+            if isfile(file_path) and file.endswith('.py'):
+                python_files_in_directory.append(file_path)
+
+    except FileNotFoundError as error:
+        print('{}: {}'.format(error.strerror, error.filename))
+
+    for file_path in python_files_in_directory:
+        put_import_pdb(file_path)
 
 
 def handle_everywhere_argument(set_value):
-    pass
+
+    if set_value.endswith('/'):
+        print('\nEnter folder\'s name without slash at the and.\n')
+        return
+
+    call_pdbe_path = getcwd()
+    directory_path = call_pdbe_path + '/' + set_value
+
+    if set_value == '.':
+        directory_path = directory_path[:-2]
+
+    python_files_in_directory = []
+
+    for root, _, file_names in walk(directory_path):
+        for file_name in file_names:
+            if file_name.endswith('py'):
+                file_path = root + '/' + file_name
+                python_files_in_directory.append(file_path)
+
+    for file_path in python_files_in_directory:
+        put_import_pdb(file_path)
 
 
 def parse_terminal_arguments(terminal_arguments: List[str]) -> argparse.Namespace:
