@@ -2,7 +2,7 @@ from os import fdopen, remove
 from shutil import move
 from tempfile import mkstemp
 
-IMPORT_PDB_LINE = 'import pdb; pdb.set_trace():\n'
+IMPORT_PDB_LINE = 'import pdb; pdb.set_trace()\n'
 
 
 def is_function_sign_in_line(line: str) -> bool:
