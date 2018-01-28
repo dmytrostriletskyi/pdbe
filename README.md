@@ -11,9 +11,47 @@ Your favorite debugger to everywhere!
 
 ### What is pdbe
 
+`pdbe` put import pdb statement `import pdb; pdb.set_trace()` in specified python's file, files in directory and
+nested files in directory.
+
 ### Motivation
 
+There could be a situations, when you need to debug project for knowing how it works, so put import pdb statement with
+`pdbe` tools, run this project and handle any moves you do in.
+
 ### How to install
+
+```
+$ pip3 install pdbe
+```
+
+## Examples
+
+Import pdb statements into particular file:
+
+```
+$ pdbe --file path/to/file.py
+```
+
+Remove pdb statement from that file with:
+
+```
+$ pdbe --file path/to/file.py --clear
+```
+
+The same works with files in directories:
+
+```
+$ pdbe --dir path/to/dir-with-python-files
+```
+
+And clear:
+
+```
+$ pdbe --dir path/to/dir-with-python-files --clear
+```
+
+Flag `--ew` instead of `--dir` allows you to put import pdb statement into all python files in all nested directories.
 
 ## Development
 
