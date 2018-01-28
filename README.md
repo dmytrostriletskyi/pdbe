@@ -17,6 +17,12 @@ Your favorite debugger to everywhere!
 
 ## Development
 
+Install packages, that needed for testing:
+
+```
+$ pip3 install requirements-dev.txt
+```
+
 Run tests before development to be sure pdbe works properly:
 
 ```
