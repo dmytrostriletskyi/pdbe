@@ -1,0 +1,17 @@
+language:
+- python
+sudo:
+- false
+
+python:
+- 3.5
+- 3.6
+
+before_install:
+- pip install -r requirements-dev.txt
+
+script:
+- flake8 pdbe
+- pycodestyle pdbe
+- pylint pdbe
+- python -m unittest discover
