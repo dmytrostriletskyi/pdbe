@@ -26,5 +26,5 @@ $ python -m unittest discover tests
 Follow codestyle with linters:
 
 ```
-$ flake8 pdbe && pycodestyle pdbe && pylint —rcfile=setup.cfg pdbe
+$ flake8 pdbe && pycodestyle pdbe && pylint pdbe
 ```

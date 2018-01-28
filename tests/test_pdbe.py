@@ -6,7 +6,7 @@ import unittest
 from ddt import data, ddt, unpack
 
 from pdbe.pdbe import (
-    get_import_pdb_line_begging_spaces,
+    get_import_pdb_line_st_spaces,
     get_function_indent,
     is_function_sign_in_line,
 )
@@ -53,9 +53,9 @@ class TestPDBE(unittest.TestCase):
         (8, '            '),
     )
     @unpack
-    def test_get_import_pdb_line_begging_spaces(self, indents_space_count, expected):
+    def test_get_import_pdb_line_start_spaces(self, indents_space_count, expected):
         """
         Test string, that needs to be before import pdb statement.
         """
-        result = get_import_pdb_line_begging_spaces(indents_space_count)
+        result = get_import_pdb_line_st_spaces(indents_space_count)
         self.assertEqual(expected, result)

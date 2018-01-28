@@ -24,7 +24,7 @@ def handle_file_argument(set_value: str, clear=False) -> None:
         put_import_pdb(file_path)
 
 
-def handle_dir_argument(set_value, clear=False):
+def handle_dir_argument(set_value: str, clear=False) -> None:
     """
     Handle import pdb statement under each function definition within all files in directory.
     """
@@ -52,7 +52,7 @@ def handle_dir_argument(set_value, clear=False):
             put_import_pdb(file_path)
 
 
-def handle_everywhere_argument(set_value, clear=False):
+def handle_everywhere_argument(set_value: str, clear=False) -> None:
     """
     Handle import pdb statement under each function definition within all nested files in directory.
     """
@@ -82,6 +82,9 @@ def handle_everywhere_argument(set_value, clear=False):
 
 
 def parse_terminal_arguments(terminal_arguments: List[str]) -> argparse.Namespace:
+    """
+    Parse terminal arguments.
+    """
     parser = argparse.ArgumentParser(description='pdbe arguments parser.')
     parser.add_argument(
         '-H',
@@ -112,6 +115,7 @@ def parse_terminal_arguments(terminal_arguments: List[str]) -> argparse.Namespac
     return parser.parse_args(terminal_arguments)
 
 
+# pylint:disable=inconsistent-return-statements
 def get_used_terminal_pair(terminal_pairs_as_tuples: List[Tuple[str, Optional[str]]]) -> Optional[Tuple[str, str]]:
     """
     Find arguments pair, that used.
@@ -176,7 +180,7 @@ def main() -> None:
         return
 
     terminal_pairs = parse_terminal_arguments(arguments)
-    terminal_pairs_as_tuples = terminal_pairs._get_kwargs()
+    terminal_pairs_as_tuples = terminal_pairs._get_kwargs()  # pylint:disable=protected-access
 
     clear = handle_clear_argument(terminal_pairs_as_tuples)
     set_flag, set_value = get_used_terminal_pair(terminal_pairs_as_tuples)
@@ -188,6 +192,7 @@ def main() -> None:
     }
 
     possible_pairs[set_flag](set_value, clear)
+
 
 if __name__ == '__main__':
     main()

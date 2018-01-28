@@ -1,3 +1,6 @@
+"""
+pdbe functionality and implementation.
+"""
 from os import fdopen, remove
 from shutil import move
 from tempfile import mkstemp
@@ -29,7 +32,7 @@ def get_function_indent(line: str) -> int:
     return indents_space_count
 
 
-def get_import_pdb_line_begging_spaces(indents_space_count: int) -> str:
+def get_import_pdb_line_st_spaces(indents_space_count: int) -> str:
     """
     Get string, that length is bigger than function declaration by 4.
     """
@@ -42,7 +45,7 @@ def formatted_to_pdb_statement_line(line: str) -> str:
     Add string of import pdb statement below function with properly indents.
     """
     indents_space_count = get_function_indent(line)
-    import_pdb_line_begging_spaces = get_import_pdb_line_begging_spaces(indents_space_count)
+    import_pdb_line_begging_spaces = get_import_pdb_line_st_spaces(indents_space_count)
     return line + import_pdb_line_begging_spaces + IMPORT_PDB_LINE
 
 
@@ -52,7 +55,7 @@ def put_import_pdb(file_path: str) -> None:
 
     It needs to be placed after function declaration.
     """
-    fh, abs_path = mkstemp()
+    fh, abs_path = mkstemp()  # pylint:disable=invalid-name
 
     with fdopen(fh, 'w') as new_file:
         with open(file_path) as old_file:
@@ -71,7 +74,7 @@ def remove_import_pdb(file_path: str) -> None:
     """
     Remove import pdb statement.
     """
-    fh, abs_path = mkstemp()
+    fh, abs_path = mkstemp()  # pylint:disable=invalid-name
 
     with fdopen(fh, 'w') as new_file:
         with open(file_path) as old_file:
