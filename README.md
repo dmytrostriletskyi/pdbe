@@ -33,6 +33,22 @@ Import pdb statements into particular file:
 $ pdbe --file path/to/file.py
 ```
 
+As result you will see:
+
+```python
+def first_function():
+    import pdb; pdb.set_trace()
+    ...
+
+def second_function():
+    import pdb; pdb.set_trace()
+    ...
+
+    def third_function():
+        import pdb; pdb.set_trace()
+        ...
+```
+
 Remove pdb statement from that file with:
 
 ```

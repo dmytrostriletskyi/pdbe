@@ -8,12 +8,10 @@ python:
 - 3.6
 
 before_install:
-- pip install -r requirements.txt
 - pip install -r requirements-dev.txt
 
 script:
 - flake8 pdbe
 - pycodestyle pdbe
-- pylint —rcfile=setup.cfg pdbe
+- pylint pdbe
 - python -m unittest discover
-d
