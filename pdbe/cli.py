@@ -84,6 +84,10 @@ def handle_everywhere_argument(set_value, clear=False):
 def parse_terminal_arguments(terminal_arguments: List[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='pdbe arguments parser.')
     parser.add_argument(
+        '-H',
+        '--help',
+    )
+    parser.add_argument(
         '-F',
         '--file',
         help='File to put import pdb under each function declaration in file.'
@@ -148,6 +152,27 @@ def main() -> None:
 
     if not arguments:
         print('Specify arguments for pdbe tool. Call --help (-H) command to know more about it.')
+        return
+
+    first_argument = arguments[0]
+    if first_argument == '-H' or '--help':
+        print(
+            '\npdbe tool put import pdb statement like `import pdb; pdb.set_trace()` below any function in file,\n'
+            'all files in directory, and nested files in directory if file has `.py` extension.'
+            '\n\nAlso you are able to clear all import statement in the similar way as you put it.'
+            '\n\nTo put import pdb statement below functions in file, use:'
+            '\n\t\tpdbe --file path/to/file.py'
+            '\nTo delete all import pdb statement below functions in file, use:'
+            '\n\t\tpdbe --file path/to/file.py --clear'
+            '\n\nIn the same you are able to put import pdb statement into all files of directory only or '
+            'all nested files in directory.'
+            'All available command for now are:'
+            '\n\t`--file` for file.'
+            '\n\t`--dir` for files in directory. I.e. pdbe --dir path/to/dir'
+            '\n\t`--ew` for nested file in directory. I.e. pdbe --ew path/to/dir'
+            '\n\t`--clear` to delete import pdb statement. Use in additional as last argument with normal commands. '
+            'I.e. pdbe --ew path/to/dir --clear'
+        )
         return
 
     terminal_pairs = parse_terminal_arguments(arguments)
