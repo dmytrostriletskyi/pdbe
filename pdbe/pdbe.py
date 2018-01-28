@@ -12,6 +12,13 @@ def is_function_sign_in_line(line: str) -> bool:
     return 'def ' in line and '(' in line and '):' in line or ') ->' in line
 
 
+def does_line_contains_import_pdb(line: str) -> bool:
+    """
+    Check if line contains import pdb statement.
+    """
+    return 'import pdb; pdb.set_trace()' in line
+
+
 def get_function_indent(line: str) -> int:
     """
     Get function indents from begging of the file.
@@ -54,6 +61,22 @@ def put_import_pdb(file_path: str) -> None:
                     formatted_line = formatted_to_pdb_statement_line(line)
                     new_file.write(formatted_line)
                 else:
+                    new_file.write(line)
+
+    remove(file_path)
+    move(abs_path, file_path)
+
+
+def remove_import_pdb(file_path: str) -> None:
+    """
+    Remove import pdb statement.
+    """
+    fh, abs_path = mkstemp()
+
+    with fdopen(fh, 'w') as new_file:
+        with open(file_path) as old_file:
+            for line in old_file:
+                if not does_line_contains_import_pdb(line):
                     new_file.write(line)
 
     remove(file_path)

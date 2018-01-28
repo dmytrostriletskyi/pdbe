@@ -7,21 +7,26 @@ from os import getcwd, listdir, walk
 from os.path import isfile, join
 from typing import List, Optional, Tuple
 
-from pdbe import put_import_pdb
+from pdbe import put_import_pdb, remove_import_pdb
 
 
-def handle_file_argument(set_value: str) -> None:
+def handle_file_argument(set_value: str, clear=False) -> None:
     """
-    Handle put import pdb statement under each function definition within file.
+    Handle import pdb statement under each function definition within file.
     """
     call_pdbe_path = getcwd()
     file_path = call_pdbe_path + '/' + set_value
-    put_import_pdb(file_path)
+
+    if clear:
+        remove_import_pdb(file_path)
+
+    else:
+        put_import_pdb(file_path)
 
 
-def handle_dir_argument(set_value):
+def handle_dir_argument(set_value, clear=False):
     """
-    Handle put import pdb statement under each function definition within all files in directory.
+    Handle import pdb statement under each function definition within all files in directory.
     """
     if set_value == '.':
         set_value = ''
@@ -41,11 +46,16 @@ def handle_dir_argument(set_value):
         print('{}: {}'.format(error.strerror, error.filename))
 
     for file_path in python_files_in_directory:
-        put_import_pdb(file_path)
+        if clear:
+            remove_import_pdb(file_path)
+        else:
+            put_import_pdb(file_path)
 
 
-def handle_everywhere_argument(set_value):
-
+def handle_everywhere_argument(set_value, clear=False):
+    """
+    Handle import pdb statement under each function definition within all nested files in directory.
+    """
     if set_value.endswith('/'):
         print('\nEnter folder\'s name without slash at the and.\n')
         return
@@ -65,7 +75,10 @@ def handle_everywhere_argument(set_value):
                 python_files_in_directory.append(file_path)
 
     for file_path in python_files_in_directory:
-        put_import_pdb(file_path)
+        if clear:
+            remove_import_pdb(file_path)
+        else:
+            put_import_pdb(file_path)
 
 
 def parse_terminal_arguments(terminal_arguments: List[str]) -> argparse.Namespace:
@@ -83,9 +96,15 @@ def parse_terminal_arguments(terminal_arguments: List[str]) -> argparse.Namespac
     parser.add_argument(
         '-E',
         '--ew',
-        help='Directory to put import pdb under each function declaration all dir\'s, included nested also, files'
+        help='Directory to put import pdb under each function declaration all dir\'s, included nested also, files',
     )
-
+    parser.add_argument(
+        '-C',
+        '--clear',
+        help='Clear import pdb statements in entered paths.',
+        dest='clear',
+        action='store_true'
+    )
     return parser.parse_args(terminal_arguments)
 
 
@@ -101,6 +120,26 @@ def get_used_terminal_pair(terminal_pairs_as_tuples: List[Tuple[str, Optional[st
     return
 
 
+def handle_clear_argument(terminal_pairs_as_tuples) -> bool:
+    """
+    Return clear argument as bool value for existing and non-existing.
+
+    Also remove it from terminal flag-value pairs because of dict-value handling.
+    """
+    clear = False
+
+    for i, pair in enumerate(terminal_pairs_as_tuples):
+        flag, value = pair[0], pair[1]
+
+        if flag == 'clear':
+            if value:
+                clear = True
+
+            del terminal_pairs_as_tuples[i]
+
+    return clear
+
+
 def main() -> None:
     """
     Main function, handled CLI.
@@ -114,6 +153,7 @@ def main() -> None:
     terminal_pairs = parse_terminal_arguments(arguments)
     terminal_pairs_as_tuples = terminal_pairs._get_kwargs()
 
+    clear = handle_clear_argument(terminal_pairs_as_tuples)
     set_flag, set_value = get_used_terminal_pair(terminal_pairs_as_tuples)
 
     possible_pairs = {
@@ -122,8 +162,7 @@ def main() -> None:
         'ew': handle_everywhere_argument,
     }
 
-    possible_pairs[set_flag](set_value)
-
+    possible_pairs[set_flag](set_value, clear)
 
 if __name__ == '__main__':
     main()
