@@ -7,7 +7,14 @@ from os import getcwd, listdir, walk
 from os.path import isfile, join
 from typing import List, Optional, Tuple
 
-from pdbe import put_import_pdb, remove_import_pdb
+from pdbe import handle_checkout, handle_commit_state, put_import_pdb, remove_import_pdb
+
+
+def make_file_state(file_path, clear) -> None:
+    if clear:
+        remove_import_pdb(file_path)
+    else:
+        put_import_pdb(file_path)
 
 
 def handle_file_argument(set_value: str, clear=False) -> None:
@@ -16,12 +23,7 @@ def handle_file_argument(set_value: str, clear=False) -> None:
     """
     call_pdbe_path = getcwd()
     file_path = call_pdbe_path + '/' + set_value
-
-    if clear:
-        remove_import_pdb(file_path)
-
-    else:
-        put_import_pdb(file_path)
+    make_file_state(file_path, clear)
 
 
 def handle_dir_argument(set_value: str, clear=False) -> None:
@@ -46,10 +48,7 @@ def handle_dir_argument(set_value: str, clear=False) -> None:
         print('{}: {}'.format(error.strerror, error.filename))
 
     for file_path in python_files_in_directory:
-        if clear:
-            remove_import_pdb(file_path)
-        else:
-            put_import_pdb(file_path)
+        make_file_state(file_path, clear)
 
 
 def handle_everywhere_argument(set_value: str, clear=False) -> None:
@@ -75,10 +74,7 @@ def handle_everywhere_argument(set_value: str, clear=False) -> None:
                 python_files_in_directory.append(file_path)
 
     for file_path in python_files_in_directory:
-        if clear:
-            remove_import_pdb(file_path)
-        else:
-            put_import_pdb(file_path)
+        make_file_state(file_path, clear)
 
 
 def parse_terminal_arguments(terminal_arguments: List[str]) -> argparse.Namespace:
@@ -100,6 +96,17 @@ def parse_terminal_arguments(terminal_arguments: List[str]) -> argparse.Namespac
         '-E',
         '--ew',
         help='Directory to put import pdb under each function declaration all dir\'s, included nested also, files',
+    )
+    parser.add_argument(
+        '-M',
+        '--commit',
+        help='Remember import pdb statements state of project. It bind import pdb statement to function name only.'
+             'So you cannot use it like git totally. It just remember which function need debugger.',
+    )
+    parser.add_argument(
+        '-K',
+        '--checkout',
+        help='Restore import pdb state from commit by SHA',
     )
     parser.add_argument(
         '-C',
@@ -144,6 +151,32 @@ def handle_clear_argument(terminal_pairs_as_tuples) -> bool:
     return clear
 
 
+def handle_commit_argument(terminal_pairs_as_tuples) -> Optional[str]:
+    for i, pair in enumerate(terminal_pairs_as_tuples):
+        flag, value = pair[0], pair[1]
+
+        if flag == 'commit':
+            if value:
+                return value
+
+            if value == '':
+                print('Commit message cannot be empty!')
+                sys.exit(1)
+
+
+def handle_checkout_argument(terminal_pairs_as_tuples) -> Optional[str]:
+    for i, pair in enumerate(terminal_pairs_as_tuples):
+        flag, value = pair[0], pair[1]
+
+        if flag == 'checkout':
+            if value:
+                return value
+
+            if value == '':
+                print('Commit (SHA) for checkout is empty!')
+                sys.exit(1)
+
+
 def pdbe() -> None:
     """
     Main function, handled CLI.
@@ -156,6 +189,21 @@ def pdbe() -> None:
 
     terminal_pairs = parse_terminal_arguments(arguments)
     terminal_pairs_as_tuples = terminal_pairs._get_kwargs()  # pylint:disable=protected-access
+    commit_message = handle_commit_argument(terminal_pairs_as_tuples)
+    checkout_sha = handle_checkout_argument(terminal_pairs_as_tuples)
+
+    if commit_message:
+        handle_commit_state(commit_message)
+        return
+
+    if checkout_sha:
+
+        if len(checkout_sha) < 5:
+            print('Provide checkout SHA no less, that 5 symbols.')
+            return
+
+        handle_checkout(checkout_sha)
+        return
 
     clear = handle_clear_argument(terminal_pairs_as_tuples)
     set_flag, set_value = get_used_terminal_pair(terminal_pairs_as_tuples)
