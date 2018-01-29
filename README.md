@@ -27,6 +27,8 @@ $ pip3 install pdbe
 
 ## Examples
 
+### Common usage
+
 Import pdb statements into particular file:
 
 ```
@@ -68,6 +70,41 @@ $ pdbe --dir path/to/dir-with-python-files --clear
 ```
 
 Flag `--ew` instead of `--dir` allows you to put import pdb statement into all python files in all nested directories.
+
+### Common usage
+
+`pdbe` provides some commands, that seems like git's arsenal.
+
+First of all, you can commit changes (in our case it is import pdb statements only) with following command:
+
+```
+$ pdbe --commit 'Commit message'
+```
+
+Then you are able to see logs (all logs of commits you did in your dev-history):
+
+```
+$ pdbe --log
+```
+
+The result will be something like that:
+
+```
+commit  | add336b6a204bb7b3abe76c296b67f92
+date    | 23:17:00 29-01-2018
+message | Commit message
+```
+
+And the final point is a `checkout` command, that can restore changes, that were bind to your commit:
+
+```
+$ pdbe checkout add336b6a204bb7b3abe76c296b67f92
+```
+
+You are able to write not less 5 symbols of commit number (SHA).
+
+Remember, all history of commits and it's data stored in hided folder called `.pdbe`, so
+do not forget put to your `.girignore` following line `.pdbe/`.
 
 ## Development
 

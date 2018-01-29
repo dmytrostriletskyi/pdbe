@@ -255,8 +255,8 @@ def handle_commits_log() -> None:
     for log in logs:
         commit_created_datetime, commit_sha, commit_message = log[0], log[1], log[2]
 
-        print(
-            '\033[94m' + f'commit  | {commit_sha}\n' + '\033[0m'
-            f'date    | {commit_created_datetime}\n'
-            f'message | {commit_message}\n'
-        )
+        commit = '\033[94m' + f'commit  | {commit_sha}' + '\033[0m\n'
+        date = f'date    | {commit_created_datetime}\n'
+        message = f'message | {commit_message}\n'
+
+        print(commit + date + message)
