@@ -97,4 +97,4 @@ requirement.txt
 !.elasticbeanstalk/*.global.yml
 .elasticbeanstalk/
 
-*/fixtures/*
+.pdbe/
