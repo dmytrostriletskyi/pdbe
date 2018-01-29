@@ -7,10 +7,13 @@ from os import getcwd, listdir, walk
 from os.path import isfile, join
 from typing import List, Optional, Tuple
 
-from pdbe import handle_checkout, handle_commit_state, put_import_pdb, remove_import_pdb
+from pdbe import handle_commits_log, handle_checkout, handle_commit_state, put_import_pdb, remove_import_pdb
 
 
 def make_file_state(file_path, clear) -> None:
+    """
+    Remove or put import pdb statement.
+    """
     if clear:
         remove_import_pdb(file_path)
     else:
@@ -77,47 +80,6 @@ def handle_everywhere_argument(set_value: str, clear=False) -> None:
         make_file_state(file_path, clear)
 
 
-def parse_terminal_arguments(terminal_arguments: List[str]) -> argparse.Namespace:
-    """
-    Parse terminal arguments.
-    """
-    parser = argparse.ArgumentParser(description='pdbe arguments parser.')
-    parser.add_argument(
-        '-F',
-        '--file',
-        help='File to put import pdb under each function declaration in file.'
-    )
-    parser.add_argument(
-        '-D',
-        '--dir',
-        help='Directory to put import pdb under each function declaration all specified dir\'s files .'
-    )
-    parser.add_argument(
-        '-E',
-        '--ew',
-        help='Directory to put import pdb under each function declaration all dir\'s, included nested also, files',
-    )
-    parser.add_argument(
-        '-M',
-        '--commit',
-        help='Remember import pdb statements state of project. It bind import pdb statement to function name only.'
-             'So you cannot use it like git totally. It just remember which function need debugger.',
-    )
-    parser.add_argument(
-        '-K',
-        '--checkout',
-        help='Restore import pdb state from commit by SHA',
-    )
-    parser.add_argument(
-        '-C',
-        '--clear',
-        help='Clear import pdb statements in entered paths.',
-        dest='clear',
-        action='store_true'
-    )
-    return parser.parse_args(terminal_arguments)
-
-
 # pylint:disable=inconsistent-return-statements
 def get_used_terminal_pair(terminal_pairs_as_tuples: List[Tuple[str, Optional[str]]]) -> Optional[Tuple[str, str]]:
     """
@@ -152,7 +114,10 @@ def handle_clear_argument(terminal_pairs_as_tuples) -> bool:
 
 
 def handle_commit_argument(terminal_pairs_as_tuples) -> Optional[str]:
-    for i, pair in enumerate(terminal_pairs_as_tuples):
+    """
+    Handle commit argument.
+    """
+    for _, pair in enumerate(terminal_pairs_as_tuples):
         flag, value = pair[0], pair[1]
 
         if flag == 'commit':
@@ -165,7 +130,10 @@ def handle_commit_argument(terminal_pairs_as_tuples) -> Optional[str]:
 
 
 def handle_checkout_argument(terminal_pairs_as_tuples) -> Optional[str]:
-    for i, pair in enumerate(terminal_pairs_as_tuples):
+    """
+    Handle checkout argument.
+    """
+    for _, pair in enumerate(terminal_pairs_as_tuples):
         flag, value = pair[0], pair[1]
 
         if flag == 'checkout':
@@ -175,6 +143,72 @@ def handle_checkout_argument(terminal_pairs_as_tuples) -> Optional[str]:
             if value == '':
                 print('Commit (SHA) for checkout is empty!')
                 sys.exit(1)
+
+
+def handle_commits_log_argument(terminal_pairs_as_tuples) -> bool:
+    """
+    Handle log argument.
+    """
+    logs = False
+
+    for i, pair in enumerate(terminal_pairs_as_tuples):
+        flag, value = pair[0], pair[1]
+
+        if flag == 'log':
+            if value:
+                logs = True
+
+            del terminal_pairs_as_tuples[i]
+
+    return logs
+
+
+def parse_terminal_arguments(terminal_arguments: List[str]) -> argparse.Namespace:
+    """
+    Parse terminal arguments.
+    """
+    parser = argparse.ArgumentParser(description='pdbe arguments parser.')
+    parser.add_argument(
+        '-F',
+        '--file',
+        help='File to put import pdb under each function declaration in file.'
+    )
+    parser.add_argument(
+        '-D',
+        '--dir',
+        help='Directory to put import pdb under each function declaration all specified dir\'s files .'
+    )
+    parser.add_argument(
+        '-E',
+        '--ew',
+        help='Directory to put import pdb under each function declaration all dir\'s, included nested also, files',
+    )
+    parser.add_argument(
+        '-M',
+        '--commit',
+        help='Remember import pdb statements state of project. It bind import pdb statement to function name only.'
+             'So you cannot use it like git totally. It just remember which function need debugger.',
+    )
+    parser.add_argument(
+        '-K',
+        '--checkout',
+        help='Restore import pdb state from commit by SHA.',
+    )
+    parser.add_argument(
+        '-L',
+        '--log',
+        help='History of all existing commits.',
+        dest='log',
+        action='store_true'
+    )
+    parser.add_argument(
+        '-C',
+        '--clear',
+        help='Clear import pdb statements in entered paths.',
+        dest='clear',
+        action='store_true'
+    )
+    return parser.parse_args(terminal_arguments)
 
 
 def pdbe() -> None:
@@ -189,15 +223,20 @@ def pdbe() -> None:
 
     terminal_pairs = parse_terminal_arguments(arguments)
     terminal_pairs_as_tuples = terminal_pairs._get_kwargs()  # pylint:disable=protected-access
+
     commit_message = handle_commit_argument(terminal_pairs_as_tuples)
     checkout_sha = handle_checkout_argument(terminal_pairs_as_tuples)
+    commits_log = handle_commits_log_argument(terminal_pairs_as_tuples)
+
+    if commits_log:
+        handle_commits_log()
+        return
 
     if commit_message:
         handle_commit_state(commit_message)
         return
 
     if checkout_sha:
-
         if len(checkout_sha) < 5:
             print('Provide checkout SHA no less, that 5 symbols.')
             return
