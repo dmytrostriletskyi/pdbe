@@ -234,7 +234,6 @@ def handle_commits_log() -> None:
     """
     Handle commits log.
     """
-
     call_commit_path = getcwd()
     pdbe_folder = call_commit_path + '/.pdbe'
     pdbe_commits_folder = pdbe_folder + '/commits/'
@@ -255,8 +254,8 @@ def handle_commits_log() -> None:
     for log in logs:
         commit_created_datetime, commit_sha, commit_message = log[0], log[1], log[2]
 
-        commit = '\033[94m' + f'commit  | {commit_sha}' + '\033[0m\n'
-        date = f'date    | {commit_created_datetime}\n'
-        message = f'message | {commit_message}\n'
+        commit = '\033[94m' + 'commit  | {}'.format(commit_sha) + '\033[0m\n'
+        date = 'date    | {}\n'.format(commit_created_datetime)
+        message = 'message | {}\n'.format(commit_message)
 
         print(commit + date + message)

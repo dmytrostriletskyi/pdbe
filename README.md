@@ -71,7 +71,7 @@ $ pdbe --dir path/to/dir-with-python-files --clear
 
 Flag `--ew` instead of `--dir` allows you to put import pdb statement into all python files in all nested directories.
 
-### Common usage
+### Advanced
 
 `pdbe` provides some commands, that seems like git's arsenal.
 
@@ -98,7 +98,7 @@ message | Commit message
 And the final point is a `checkout` command, that can restore changes, that were bind to your commit:
 
 ```
-$ pdbe checkout add336b6a204bb7b3abe76c296b67f92
+$ pdbe --checkout add336b6a204bb7b3abe76c296b67f92
 ```
 
 You are able to write not less 5 symbols of commit number (SHA).
