@@ -98,3 +98,4 @@ requirement.txt
 .elasticbeanstalk/
 
 .pdbe/
+pdbemanualtestfiles/
