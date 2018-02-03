@@ -8,6 +8,8 @@ try:
     import utils
 except ModuleNotFoundError:
     from pdbe import utils
+except ImportError:
+    from pdbe import utils
 
 
 def put_import_pdb(file_path: str) -> None:

@@ -12,6 +12,8 @@ try:
     import utils
 except ModuleNotFoundError:
     from pdbe import utils
+except ImportError:
+    from pdbe import utils
 
 
 def get_commit_functions(file_path: str) -> list:

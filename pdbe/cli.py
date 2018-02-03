@@ -12,6 +12,8 @@ try:
     import main
 except ModuleNotFoundError:
     from pdbe import commits, main
+except ImportError:
+    from pdbe import commits, main
 
 
 def make_file_state(file_path, clear) -> None:
