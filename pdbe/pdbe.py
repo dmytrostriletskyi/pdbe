@@ -4,6 +4,7 @@ Pdbe functionality and implementation.
 from os import fdopen
 from tempfile import mkstemp
 
+# pylint:disable=no-name-in-module
 from utils import (
     change_files_data,
     does_line_contains_import_pdb,

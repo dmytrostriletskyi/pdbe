@@ -1,3 +1,6 @@
+"""
+Pdbe commits logic.
+"""
 import datetime
 import binascii
 from os import fdopen, getcwd, path, mkdir, walk, urandom, listdir
@@ -5,6 +8,7 @@ from os.path import join
 from tempfile import mkstemp
 from typing import List
 
+# pylint:disable=no-name-in-module
 from utils import (
     change_files_data,
     get_import_pdb_line_begging_spaces,

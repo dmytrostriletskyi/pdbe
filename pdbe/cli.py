@@ -12,6 +12,8 @@ from commits import (
     handle_checkout,
     handle_commit_state,
 )
+
+# pylint:disable=no-name-in-module
 from pdbe import (
     put_import_pdb,
     remove_import_pdb,
