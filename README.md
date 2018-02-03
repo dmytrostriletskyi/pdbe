@@ -11,13 +11,12 @@ Your favorite debugger to everywhere!
 
 ### What is pdbe
 
-`pdbe` put import pdb statement `import pdb; pdb.set_trace()` in specified python's file, files in directory and
-nested files in directory.
+`pdbe` puts import pdb statement `import pdb; pdb.set_trace()` in specified python's file, files in directory and
+nested files in directory (files in directory, that located in anoter directory with files also).
 
 ### Motivation
 
-There could be a situations, when you need to debug project for knowing how it works, so put import pdb statement with
-`pdbe` tools, run this project and handle any moves you do in.
+There could be a situations, when you need to debug project (i.e. super old framework with millions of code lines) for knowing how it works. So put import pdb statement with `pdbe` tools, run this project and handle any bunch of code.
 
 ### How to install
 
@@ -25,7 +24,7 @@ There could be a situations, when you need to debug project for knowing how it w
 $ pip3 install pdbe
 ```
 
-## Examples
+## Usage
 
 ### Common usage
 
@@ -69,13 +68,13 @@ And clear:
 $ pdbe --dir path/to/dir-with-python-files --clear
 ```
 
-Flag `--ew` instead of `--dir` allows you to put import pdb statement into all python files in all nested directories.
+Flag `--ew` instead of `--dir` allows you to put import pdb statement into all python files in all directories (nested from specified.).
 
-### Advanced
+### Advanced usage
 
 `pdbe` provides some commands, that seems like git's arsenal.
 
-First of all, you can commit changes (in our case it is import pdb statements only) with following command:
+First of all, you can commit (save to ususing in future) state of import pdb statements:
 
 ```
 $ pdbe --commit 'Commit message'
@@ -103,8 +102,65 @@ $ pdbe --checkout add336b6a204bb7b3abe76c296b67f92
 
 You are able to write not less 5 symbols of commit number (SHA).
 
+### Advanced flow example
+
+To clearify how it works, imagine that you wrote `pdbe --file path/to/file.py`:
+
+```python
+def first_function():
+    import pdb; pdb.set_trace()
+    ...
+
+def second_function():
+    import pdb; pdb.set_trace()
+    ...
+
+    def third_function():
+        import pdb; pdb.set_trace()
+        ...
+```
+
+That commited state of imports with:
+
+```
+$ pdbe --commit 'Commit message'
+```
+
+Next step is a clearing imports:
+
+```
+$ pdbe --file path/to/file.py --clear
+```
+
+```python
+def first_function():
+    ...
+
+def second_function():
+    ...
+
+    def third_function():
+        ...
+```
+
+And now you do not need remember which file you did debbug (you could go to the lunch) and put imports again.
+
+Take a look at logs:
+
+```
+commit  | add336b6a204bb7b3abe76c296b67f92
+date    | 23:17:00 29-01-2018
+message | Commit message
+```
+
+And restore it with `checkout` command:
+
+```
+$ pdbe --checkout add336b6a204bb7b3abe76c296b67f92
+```
+
 Remember, all history of commits and it's data stored in hided folder called `.pdbe`, so
-do not forget put to your `.girignore` following line `.pdbe/`.
+do not forget put following line `.pdbe/` to your `.girignore`.
 
 ## Development
 
