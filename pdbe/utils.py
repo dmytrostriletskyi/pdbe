@@ -1,6 +1,11 @@
 """
 Pdbe utils.
 """
+from os import remove
+from shutil import move
+
+IMPORT_PDB_LINE = 'import pdb; pdb.set_trace()\n'
+LINE_FEED = '\n'
 
 
 def is_function_sign_in_line(line: str) -> bool:
@@ -68,3 +73,11 @@ def get_project_call_cwd(call_commit_path: str, file_path: str) -> str:
             project_call_cwd += static
 
     return project_call_cwd
+
+
+def change_files_data(file_path: str, abs_path: str) -> None:
+    """
+    Change files data.
+    """
+    remove(file_path)
+    move(abs_path, file_path)

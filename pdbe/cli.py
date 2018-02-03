@@ -18,7 +18,6 @@ from pdbe import (
 )
 
 
-
 def make_file_state(file_path, clear) -> None:
     """
     Remove or put import pdb statement.

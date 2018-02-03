@@ -1,20 +1,19 @@
 import datetime
 import binascii
-from os import fdopen, remove, getcwd, path, mkdir, walk, urandom, listdir
+from os import fdopen, getcwd, path, mkdir, walk, urandom, listdir
 from os.path import join
-from shutil import move
 from tempfile import mkstemp
 from typing import List
 
 from utils import (
+    change_files_data,
     get_import_pdb_line_begging_spaces,
     does_line_contains_import_pdb,
     is_function_sign_in_line,
     get_project_call_cwd,
+    IMPORT_PDB_LINE,
+    LINE_FEED,
 )
-
-IMPORT_PDB_LINE = 'import pdb; pdb.set_trace()\n'
-LINE_FEED = '\n'
 
 
 def get_commit_functions(file_path: str) -> list:
@@ -67,8 +66,7 @@ def restore_import_pdb_from_commit(commit_content: List[str], call_commit_path: 
                             import_pdb_line_begging_spaces = get_import_pdb_line_begging_spaces(line)
                             new_file.write(import_pdb_line_begging_spaces + IMPORT_PDB_LINE)
 
-            remove(file_to_restore)
-            move(abs_path, file_to_restore)
+            change_files_data(file_to_restore, abs_path)
 
 
 def handle_commits_log() -> None:
@@ -92,8 +90,8 @@ def handle_commits_log() -> None:
 
             logs.append(log)
 
-    for log in logs:
-        commit_created_datetime, commit_sha, commit_message = log[0], log[1], log[2]
+    for log in sorted(logs, key=lambda x: x[0], reverse=True):
+        commit_created_datetime, commit_sha, commit_message = log
 
         commit = '\033[94m' + 'commit  | {}'.format(commit_sha) + '\033[0m\n'
         date = 'date    | {}\n'.format(commit_created_datetime)

@@ -1,19 +1,18 @@
 """
 Pdbe functionality and implementation.
 """
-from os import fdopen, remove
-from shutil import move
+from os import fdopen
 from tempfile import mkstemp
 
 from utils import (
+    change_files_data,
     does_line_contains_import_pdb,
     get_import_pdb_line_st_spaces,
     get_function_indent,
     is_commended_function,
     is_function_sign_in_line,
+    IMPORT_PDB_LINE,
 )
-
-IMPORT_PDB_LINE = 'import pdb; pdb.set_trace()\n'
 
 
 def put_import_pdb(file_path: str) -> None:
@@ -34,8 +33,7 @@ def put_import_pdb(file_path: str) -> None:
                 else:
                     new_file.write(line)
 
-    remove(file_path)
-    move(abs_path, file_path)
+    change_files_data(file_path, abs_path)
 
 
 def remove_import_pdb(file_path: str) -> None:
@@ -50,5 +48,4 @@ def remove_import_pdb(file_path: str) -> None:
                 if not does_line_contains_import_pdb(line):
                     new_file.write(line)
 
-    remove(file_path)
-    move(abs_path, file_path)
+    change_files_data(file_path, abs_path)
