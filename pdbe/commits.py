@@ -10,9 +10,8 @@ from typing import List
 
 try:
     import utils
-except ModuleNotFoundError:
-    from pdbe import utils
-except ImportError:
+# pylint:disable=bare-except
+except:  # Python 3.5 does not contain `ModuleNotFoundError`
     from pdbe import utils
 
 

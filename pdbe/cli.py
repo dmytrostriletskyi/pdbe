@@ -10,9 +10,8 @@ from typing import List, Optional, Tuple
 try:
     import commits
     import main
-except ModuleNotFoundError:
-    from pdbe import commits, main
-except ImportError:
+# pylint:disable=bare-except
+except:  # Python 3.5 does not contain `ModuleNotFoundError`
     from pdbe import commits, main
 
 
