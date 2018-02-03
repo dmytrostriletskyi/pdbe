@@ -7,7 +7,12 @@ from os import getcwd, listdir, walk
 from os.path import isfile, join
 from typing import List, Optional, Tuple
 
-from pdbe import handle_commits_log, handle_checkout, handle_commit_state, put_import_pdb, remove_import_pdb
+try:
+    import commits
+    import main
+# pylint:disable=bare-except
+except:  # Python 3.5 does not contain `ModuleNotFoundError`
+    from pdbe import commits, main
 
 
 def make_file_state(file_path, clear) -> None:
@@ -15,9 +20,9 @@ def make_file_state(file_path, clear) -> None:
     Remove or put import pdb statement.
     """
     if clear:
-        remove_import_pdb(file_path)
+        main.remove_import_pdb(file_path)
     else:
-        put_import_pdb(file_path)
+        main.put_import_pdb(file_path)
 
 
 def handle_file_argument(set_value: str, clear=False) -> None:
@@ -229,11 +234,11 @@ def pdbe() -> None:
     commits_log = handle_commits_log_argument(terminal_pairs_as_tuples)
 
     if commits_log:
-        handle_commits_log()
+        commits.handle_commits_log()
         return
 
     if commit_message:
-        handle_commit_state(commit_message)
+        commits.handle_commit_state(commit_message)
         return
 
     if checkout_sha:
@@ -241,7 +246,7 @@ def pdbe() -> None:
             print('Provide checkout SHA no less, that 5 symbols.')
             return
 
-        handle_checkout(checkout_sha)
+        commits.handle_checkout(checkout_sha)
         return
 
     clear = handle_clear_argument(terminal_pairs_as_tuples)

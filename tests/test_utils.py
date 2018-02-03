@@ -5,7 +5,7 @@ import unittest
 
 from ddt import data, ddt, unpack
 
-from pdbe.pdbe import (
+from pdbe.utils import (
     get_import_pdb_line_st_spaces,
     get_function_indent,
     is_function_sign_in_line,
@@ -13,7 +13,7 @@ from pdbe.pdbe import (
 
 
 @ddt
-class TestPDBE(unittest.TestCase):
+class TestUtils(unittest.TestCase):
     """
     Test pdbe functionality.
     """
