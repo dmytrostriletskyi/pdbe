@@ -1,23 +1,17 @@
 """
 Pdbe commits logic.
 """
-import datetime
+from datetime import datetime
 import binascii
 from os import fdopen, getcwd, path, mkdir, walk, urandom, listdir
 from os.path import join
 from tempfile import mkstemp
 from typing import List
 
-# pylint:disable=no-name-in-module
-from utils import (
-    change_files_data,
-    get_import_pdb_line_begging_spaces,
-    does_line_contains_import_pdb,
-    is_function_sign_in_line,
-    get_project_call_cwd,
-    IMPORT_PDB_LINE,
-    LINE_FEED,
-)
+try:
+    import utils
+except ModuleNotFoundError:
+    from pdbe import utils
 
 
 def get_commit_functions(file_path: str) -> list:
@@ -33,10 +27,10 @@ def get_commit_functions(file_path: str) -> list:
         for index in range(len(content)):
             line = content[index]
 
-            if does_line_contains_import_pdb(line):
+            if utils.does_line_contains_import_pdb(line):
                 suggested_function = content[index - 1]
 
-                if is_function_sign_in_line(suggested_function):
+                if utils.is_function_sign_in_line(suggested_function):
                     function_open_bracket_index = suggested_function.index('(')
                     function_name = suggested_function[4:function_open_bracket_index]
 
@@ -67,10 +61,10 @@ def restore_import_pdb_from_commit(commit_content: List[str], call_commit_path: 
                         if 'def ' + python_file + '(' in line:
 
                             # pylint:disable=invalid-name
-                            import_pdb_line_begging_spaces = get_import_pdb_line_begging_spaces(line)
-                            new_file.write(import_pdb_line_begging_spaces + IMPORT_PDB_LINE)
+                            import_pdb_line_begging_spaces = utils.get_import_pdb_line_begging_spaces(line)
+                            new_file.write(import_pdb_line_begging_spaces + utils.IMPORT_PDB_LINE)
 
-            change_files_data(file_to_restore, abs_path)
+            utils.change_files_data(file_to_restore, abs_path)
 
 
 def handle_commits_log() -> None:
@@ -94,7 +88,12 @@ def handle_commits_log() -> None:
 
             logs.append(log)
 
-    for log in sorted(logs, key=lambda x: x[0], reverse=True):
+    sorted_commits_by_datetime = sorted(
+        logs, key=lambda x: datetime.strptime(x[0], '%H:%M:%S %d-%m-%Y'), reverse=True
+    )
+
+    for log in sorted_commits_by_datetime:
+
         commit_created_datetime, commit_sha, commit_message = log
 
         commit = '\033[94m' + 'commit  | {}'.format(commit_sha) + '\033[0m\n'
@@ -152,18 +151,18 @@ def handle_commit_state(commit_message) -> None:
 
     with open(commit_file_path, 'w') as file:
 
-        datetime_now = datetime.datetime.now().strftime('%H:%M:%S %d-%m-%Y')
+        datetime_now = datetime.now().strftime('%H:%M:%S %d-%m-%Y')
 
-        file.write(datetime_now + LINE_FEED)
-        file.write(commit_sha + LINE_FEED)
-        file.write(commit_message + LINE_FEED)
+        file.write(datetime_now + utils.LINE_FEED)
+        file.write(commit_sha + utils.LINE_FEED)
+        file.write(commit_message + utils.LINE_FEED)
 
         for file_path in python_files_in_directory:
             commit_functions = get_commit_functions(file_path)
 
             if commit_functions:
-                project_call_cwd = get_project_call_cwd(call_commit_path, file_path)
-                file.write(project_call_cwd + LINE_FEED)
+                project_call_cwd = utils.get_project_call_cwd(call_commit_path, file_path)
+                file.write(project_call_cwd + utils.LINE_FEED)
 
                 for function_name in commit_functions:
-                    file.write(function_name + LINE_FEED)
+                    file.write(function_name + utils.LINE_FEED)
