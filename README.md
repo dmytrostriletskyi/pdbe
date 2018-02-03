@@ -12,7 +12,7 @@ Your favorite debugger to everywhere!
 ### What is pdbe
 
 `pdbe` puts import pdb statement `import pdb; pdb.set_trace()` in specified python's file, files in directory and
-nested files in directory (files in directory, that located in anoter directory with files also).
+nested files in directory (files in directory, that located in another directory with files also).
 
 ### Motivation
 
@@ -68,7 +68,7 @@ And clear:
 $ pdbe --dir path/to/dir-with-python-files --clear
 ```
 
-Flag `--ew` instead of `--dir` allows you to put import pdb statement into all python files in all directories (nested from specified.).
+Flag `--ew` instead of `--dir` allows you to put import pdb statement into all python files in all directories (nested from specified).
 
 ### Advanced usage
 
@@ -160,7 +160,7 @@ $ pdbe --checkout add336b6a204bb7b3abe76c296b67f92
 ```
 
 Remember, all history of commits and it's data stored in hided folder called `.pdbe`, so
-do not forget put following line `.pdbe/` to your `.girignore`.
+do not forget put following line `.pdbe/` to your `.gitignore`.
 
 ## Development
 
