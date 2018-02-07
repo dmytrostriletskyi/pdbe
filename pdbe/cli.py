@@ -95,8 +95,6 @@ def get_used_terminal_pair(terminal_pairs_as_tuples: List[Tuple[str, Optional[st
         if value is not None:
             return pair[0], value
 
-    return
-
 
 def handle_clear_argument(terminal_pairs_as_tuples) -> bool:
     """
