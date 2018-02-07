@@ -143,7 +143,7 @@ def second_function():
         ...
 ```
 
-And now you do not need remember which file you did debbug (you could go to the lunch) and put imports again.
+And now you do not need remember which file you did debug (you could go to the lunch) and put imports again.
 
 Take a look at logs:
 
