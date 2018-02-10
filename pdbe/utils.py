@@ -8,7 +8,7 @@ IMPORT_PDB_LINE = 'import pdb; pdb.set_trace()\n'
 LINE_FEED = '\n'
 
 
-def is_one_line_function_declaration_line(line: str) -> bool:
+def is_one_line_function_declaration_line(line: str) -> bool:  # pylint:disable=invalid-name
     """
     Check if line contains function declaration.
     """

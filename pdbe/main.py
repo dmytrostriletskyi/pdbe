@@ -27,7 +27,7 @@ def put_import_pdb(file_path: str) -> None:
             multiple_function_declaration_begging_spaces = ''
 
             for line in old_file:
-                if len(multiple_function_declaration_begging_spaces) > 0:
+                if multiple_function_declaration_begging_spaces:
                     if 'def' not in line and '):' in line:
                         import_pdb_line_begging_spaces = multiple_function_declaration_begging_spaces
                         import_pdb_statement_to_write = import_pdb_line_begging_spaces + utils.IMPORT_PDB_LINE
@@ -41,7 +41,9 @@ def put_import_pdb(file_path: str) -> None:
                 else:
                     if 'def' in line and not utils.is_commended_function(line):
                         indents_space_count = utils.get_function_indent(line)
-                        multiple_function_declaration_begging_spaces = utils.get_import_pdb_line_st_spaces(indents_space_count)
+                        multiple_function_declaration_begging_spaces = utils.get_import_pdb_line_st_spaces(
+                            indents_space_count
+                        )
 
                     new_file.write(line)
 

@@ -31,7 +31,7 @@ def get_commit_functions(file_path: str) -> list:
             if utils.does_line_contains_import_pdb(line):
                 suggested_function = content[index - 1]
 
-                if utils.is_function_sign_in_line(suggested_function):
+                if utils.is_one_line_function_declaration_line(suggested_function):
                     function_open_bracket_index = suggested_function.index('(')
                     function_name = suggested_function[4:function_open_bracket_index]
 

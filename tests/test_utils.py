@@ -8,7 +8,7 @@ from ddt import data, ddt, unpack
 from pdbe.utils import (
     get_import_pdb_line_st_spaces,
     get_function_indent,
-    is_function_sign_in_line,
+    is_one_line_function_declaration_line,
 )
 
 
@@ -29,7 +29,7 @@ class TestUtils(unittest.TestCase):
         Case: needs to detect function declaration.
         Expected: only line, that contains `def`, `(` and `):` substring confirmed.
         """
-        result = is_function_sign_in_line(line)
+        result = is_one_line_function_declaration_line(line)
         self.assertEqual(expected, result)
 
     @data(
