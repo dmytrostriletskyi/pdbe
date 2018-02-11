@@ -8,7 +8,7 @@ IMPORT_PDB_LINE = 'import pdb; pdb.set_trace()\n'
 LINE_FEED = '\n'
 
 
-def is_function_sign_in_line(line: str) -> bool:
+def is_one_line_function_declaration_line(line: str) -> bool:  # pylint:disable=invalid-name
     """
     Check if line contains function declaration.
     """
@@ -19,7 +19,7 @@ def does_line_contains_import_pdb(line: str) -> bool:
     """
     Check if line contains import pdb statement.
     """
-    return 'import pdb; pdb.set_trace()' in line
+    return ['import', 'pdb;', 'pdb.set_trace()'] == line.split()
 
 
 def is_commended_function(line: str) -> bool:
