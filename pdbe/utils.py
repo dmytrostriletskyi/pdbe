@@ -19,7 +19,7 @@ def does_line_contains_import_pdb(line: str) -> bool:
     """
     Check if line contains import pdb statement.
     """
-    return 'import pdb; pdb.set_trace()' in line
+    return ['import', 'pdb;', 'pdb.set_trace()'] == line.split()
 
 
 def is_commended_function(line: str) -> bool:
