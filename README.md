@@ -7,6 +7,9 @@ Your favorite debugger to everywhere!
 ![Python3](https://img.shields.io/badge/Python-3.5-brightgreen.svg)
 ![Python3](https://img.shields.io/badge/Python-3.6-brightgreen.svg)
 
+[![Medium](https://img.shields.io/badge/Post-Medium-brightgreen.svg)](https://medium.com/@dmytrostriletskyi/https-medium-com-dmytrostriletskyi-pdbe-a-feature-for-internal-python-debugger-7081f589bcbb)
+[![Habrahabr](https://img.shields.io/badge/Post-Habrahabr-brightgreen.svg)](https://habrahabr.ru/post/348376/)
+
 ## Getting started
 
 ### What is pdbe
