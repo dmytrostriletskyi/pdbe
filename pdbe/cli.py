@@ -7,12 +7,13 @@ from os import getcwd, listdir, walk
 from os.path import isfile, join
 from typing import List, Optional, Tuple
 
-from pdbe._version import __version__
 try:
     import commits
     import main
+    import __init__
 # pylint:disable=bare-except
 except:  # Python 3.5 does not contain `ModuleNotFoundError`
+    from pdbe import __init__
     from pdbe import commits, main
 
 
@@ -240,7 +241,7 @@ def pdbe() -> None:
     commits_log = handle_commits_log_argument(terminal_pairs_as_tuples)
 
     if terminal_pairs.version:
-        print(__version__)
+        print(__init__.__version__)
         return
 
     if commits_log:

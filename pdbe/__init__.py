@@ -1,5 +1,4 @@
 """
 Init.
 """
-from pdbe._version import __version__
-
+__version__ = '3.0.0'
