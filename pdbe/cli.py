@@ -10,11 +10,11 @@ from typing import List, Optional, Tuple
 try:
     import commits
     import main
-    import __init__
+    from __init__ import __version__
 # pylint:disable=bare-except
 except:  # Python 3.5 does not contain `ModuleNotFoundError`
-    from pdbe import __init__
     from pdbe import commits, main
+    from pdbe import __version__
 
 
 def make_file_state(file_path, clear) -> None:
@@ -241,7 +241,7 @@ def pdbe() -> None:
     commits_log = handle_commits_log_argument(terminal_pairs_as_tuples)
 
     if terminal_pairs.version:
-        print(__init__.__version__)
+        print(__version__)
         return
 
     if commits_log:
