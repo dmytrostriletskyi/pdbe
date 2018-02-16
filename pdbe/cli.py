@@ -216,7 +216,7 @@ def parse_terminal_arguments(terminal_arguments: List[str]) -> argparse.Namespac
     parser.add_argument(
         '-v',
         '--version',
-        help='Display epdb version',
+        help='Display a pdbe version',
         dest='version',
         action='store_true'
     )
