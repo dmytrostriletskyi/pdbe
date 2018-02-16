@@ -3,6 +3,7 @@ Setup.
 """
 from setuptools import find_packages, setup
 
+from pdbe import __version__
 
 setup(
     classifiers=[
@@ -24,5 +25,5 @@ setup(
     name='pdbe',
     packages=find_packages(),
     include_package_data=True,
-    version='0.2.1',
+    version=__version__,
 )
