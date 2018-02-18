@@ -2,9 +2,44 @@
 Pdbe utils.
 """
 from os import remove
+from os.path import expanduser
 from shutil import move
 
-IMPORT_PDB_LINE = 'import pdb; pdb.set_trace()\n'
+
+def read_confs():
+    debugger = 'import pdb; pdb.set_trace()\n'
+    ignore = []
+
+    home = expanduser('~')
+    pdberc = home + '/.pdberc'
+
+    confs = {}
+
+    with open(pdberc, 'r') as file:
+        content = [line.strip() for line in file.readlines()]
+
+    for line in content:
+        if '=' in line and line.strip()[0] != '#':
+            key, value = line.split('=')
+            confs[key] = value
+
+    if 'debugger' in confs:
+        if confs['debugger'] == 'ipdb':
+            debugger = 'import ipdb; ipdb.set_trace()\n'
+
+    if 'ignore' in confs:
+        ignore = confs['ignore'].split(',')
+
+    result = {
+        'debugger': debugger,
+        'ignore': ignore,
+    }
+
+    return result
+
+
+IMPORT_PDB_LINE = read_confs()['debugger']
+INGORED_PATHS = read_confs()['ignore']
 LINE_FEED = '\n'
 
 
@@ -19,7 +54,7 @@ def does_line_contains_import_pdb(line: str) -> bool:
     """
     Check if line contains import pdb statement.
     """
-    return ['import', 'pdb;', 'pdb.set_trace()'] == line.split()
+    return IMPORT_PDB_LINE.strip().split() == line.split()
 
 
 def is_commended_function(line: str) -> bool:
@@ -81,3 +116,13 @@ def change_files_data(file_path: str, abs_path: str) -> None:
     """
     remove(file_path)
     move(abs_path, file_path)
+
+
+def check_if_file_is_ignored(file_path):
+    path_parts = file_path.split('/')
+
+    for part in path_parts:
+        if part in INGORED_PATHS:
+            return True
+
+    return
