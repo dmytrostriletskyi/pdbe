@@ -1,8 +1,9 @@
 """
 Pdbe commits logic.
 """
-from datetime import datetime
 import binascii
+import keyword
+from datetime import datetime
 from os import fdopen, getcwd, path, mkdir, walk, urandom, listdir
 from os.path import join
 from tempfile import mkstemp
@@ -24,48 +25,89 @@ def get_commit_functions(file_path: str) -> list:
     with open(file_path, 'r') as file:
         content = [line.strip() for line in file.readlines()]
 
+        suggested_function = ''
+
         # pylint:disable=consider-using-enumerate
-        for index in range(len(content)):
-            line = content[index]
+        for line in content:
+
+            if utils.is_one_line_function_declaration_line(line) and not utils.is_commended_function(line):
+                function_open_bracket_index = line.index('(')
+                suggested_function = line[4:function_open_bracket_index]
+
+            elif 'def' in line and '(' in line and not utils.is_commended_function(line):
+                function_open_bracket_index = line.index('(')
+                suggested_function = line[4:function_open_bracket_index]
 
             if utils.does_line_contains_import_pdb(line):
-                suggested_function = content[index - 1]
-
-                if utils.is_function_sign_in_line(suggested_function):
-                    function_open_bracket_index = suggested_function.index('(')
-                    function_name = suggested_function[4:function_open_bracket_index]
-
-                    commit_functions.append(function_name)
+                commit_functions.append(suggested_function)
 
     return commit_functions
 
 
+# too-many-locals, too-many-branches, refactor
+# pylint:disable=too-many-locals,too-many-branches
 def restore_import_pdb_from_commit(commit_content: List[str], call_commit_path: str) -> None:
     """
     Restore import pdb statements from specified commit.
     """
-    file_to_restore = ''
+    commit_content.append('.py')  # mock for algorithm below
 
-    for python_file in commit_content:
+    files_to_restore = []
+    functions_to_restore = []
+    temp_restore = []
 
-        if '.py' in python_file:
-            file_to_restore = call_commit_path + python_file
+    for content in commit_content:
 
-        else:
-            fh, abs_path = mkstemp()  # pylint:disable=invalid-name
+        if '.py' not in content:
+            temp_restore.append(content)
 
-            with fdopen(fh, 'w') as new_file:
-                with open(file_to_restore) as old_file:
-                    for line in old_file:
-                        new_file.write(line)
+        if '.py' in content:
+            if temp_restore:
+                functions_to_restore.append(temp_restore)
+                temp_restore = []
 
-                        if 'def ' + python_file + '(' in line:
+            file_to_restore = call_commit_path + content
+            files_to_restore.append(file_to_restore)
 
+    for file_to_restore, functions in zip(files_to_restore, functions_to_restore):
+
+        fh, abs_path = mkstemp()  # pylint:disable=invalid-name
+
+        with fdopen(fh, 'w') as new_file:
+            with open(file_to_restore) as old_file:
+                stored_import_pdb_line_begging_spaces = ''
+                stored_function_name = ''
+
+                for line in old_file:
+                    keywords_in_line = list(set(keyword.kwlist).intersection(line.split()))
+                    new_file.write(line)
+
+                    if 'def ' in line and '(' in line and '):' in line and not utils.is_commended_function(line):
+
+                        strip_line = line.strip()
+                        function_open_bracket_index = strip_line.index('(')
+                        function_name = strip_line[4:function_open_bracket_index]
+
+                        if function_name in functions:
                             # pylint:disable=invalid-name
                             import_pdb_line_begging_spaces = utils.get_import_pdb_line_begging_spaces(line)
                             new_file.write(import_pdb_line_begging_spaces + utils.IMPORT_PDB_LINE)
 
-            utils.change_files_data(file_to_restore, abs_path)
+                    elif 'def ' in line and '(' in line and '):' not in line:
+                        function_name = line.split()[1][:-1]
+
+                        if function_name in functions:
+                            import_pdb_line_begging_spaces = utils.get_import_pdb_line_begging_spaces(line)
+                            stored_import_pdb_line_begging_spaces = import_pdb_line_begging_spaces
+                            stored_function_name = function_name
+                        else:
+                            stored_function_name = ''
+
+                    elif 'def' not in line and '):' in line and not keywords_in_line:
+                        if stored_function_name in functions:
+                            new_file.write(stored_import_pdb_line_begging_spaces + utils.IMPORT_PDB_LINE)
+
+        utils.change_files_data(file_to_restore, abs_path)
 
 
 def handle_commits_log() -> None:

@@ -7,6 +7,9 @@ Your favorite debugger to everywhere!
 ![Python3](https://img.shields.io/badge/Python-3.5-brightgreen.svg)
 ![Python3](https://img.shields.io/badge/Python-3.6-brightgreen.svg)
 
+[![Medium](https://img.shields.io/badge/Post-Medium-brightgreen.svg)](https://medium.com/@dmytrostriletskyi/https-medium-com-dmytrostriletskyi-pdbe-a-feature-for-internal-python-debugger-7081f589bcbb)
+[![Habrahabr](https://img.shields.io/badge/Post-Habrahabr-brightgreen.svg)](https://habrahabr.ru/post/348376/)
+
 ## Getting started
 
 ### What is pdbe
@@ -143,7 +146,7 @@ def second_function():
         ...
 ```
 
-And now you do not need remember which file you did debbug (you could go to the lunch) and put imports again.
+And now you do not need remember which file you did debug (you could go to the lunch) and put imports again.
 
 Take a look at logs:
 
@@ -161,6 +164,24 @@ $ pdbe --checkout add336b6a204bb7b3abe76c296b67f92
 
 Remember, all history of commits and it's data stored in hided folder called `.pdbe`, so
 do not forget put following line `.pdbe/` to your `.gitignore`.
+
+## Configuration file
+
+`Pdbe` supports a configurations. Configurations have the following view.
+
+```
+debugger=ipdb
+ignore=migrations,fixtures,setup.py
+#ignore=contributions,test_view.py
+```
+
+To use the configuration file, create a file called `.pdberc` within home directory (`cd ~`).
+And for now there are two points are supported:
+
+1. `debugger` to set `ipdb` (only `ipdb` is supported for now).
+2. `ignore` to set directories (files in this directory will never be handled by pdbe) and files. Use `,` symbol to separate content of this setting.
+
+Also you are able to comment configuration line with `#` symbol.
 
 ## Development
 

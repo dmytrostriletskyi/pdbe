@@ -10,9 +10,11 @@ from typing import List, Optional, Tuple
 try:
     import commits
     import main
+    from __init__ import __version__
 # pylint:disable=bare-except
 except:  # Python 3.5 does not contain `ModuleNotFoundError`
     from pdbe import commits, main
+    from pdbe import __version__
 
 
 def make_file_state(file_path, clear) -> None:
@@ -94,8 +96,6 @@ def get_used_terminal_pair(terminal_pairs_as_tuples: List[Tuple[str, Optional[st
         value = pair[1]
         if value is not None:
             return pair[0], value
-
-    return
 
 
 def handle_clear_argument(terminal_pairs_as_tuples) -> bool:
@@ -213,6 +213,13 @@ def parse_terminal_arguments(terminal_arguments: List[str]) -> argparse.Namespac
         dest='clear',
         action='store_true'
     )
+    parser.add_argument(
+        '-v',
+        '--version',
+        help='Display a pdbe version',
+        dest='version',
+        action='store_true'
+    )
     return parser.parse_args(terminal_arguments)
 
 
@@ -232,6 +239,10 @@ def pdbe() -> None:
     commit_message = handle_commit_argument(terminal_pairs_as_tuples)
     checkout_sha = handle_checkout_argument(terminal_pairs_as_tuples)
     commits_log = handle_commits_log_argument(terminal_pairs_as_tuples)
+
+    if terminal_pairs.version:
+        print(__version__)
+        return
 
     if commits_log:
         commits.handle_commits_log()

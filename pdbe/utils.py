@@ -2,13 +2,57 @@
 Pdbe utils.
 """
 from os import remove
+from os.path import expanduser, exists
 from shutil import move
 
-IMPORT_PDB_LINE = 'import pdb; pdb.set_trace()\n'
+
+def read_confs():
+    """
+    Read configuration file called `.pdberc`.
+    """
+    debugger = 'import pdb; pdb.set_trace()\n'
+    ignore = []
+
+    home = expanduser('~')
+    pdberc = home + '/.pdberc'
+
+    confs = {}
+
+    if not exists(pdberc):
+        return {
+            'debugger': debugger,
+            'ignore': ignore,
+        }
+
+    with open(pdberc, 'r') as file:
+        content = [line.strip() for line in file.readlines()]
+
+    for line in content:
+        if '=' in line and line.strip()[0] != '#':
+            key, value = line.split('=')
+            confs[key] = value
+
+    if 'debugger' in confs:
+        if confs['debugger'] == 'ipdb':
+            debugger = 'import ipdb; ipdb.set_trace()\n'
+
+    if 'ignore' in confs:
+        ignore = confs['ignore'].split(',')
+
+    result = {
+        'debugger': debugger,
+        'ignore': ignore,
+    }
+
+    return result
+
+
+IMPORT_PDB_LINE = read_confs()['debugger']
+INGORED_PATHS = read_confs()['ignore']
 LINE_FEED = '\n'
 
 
-def is_function_sign_in_line(line: str) -> bool:
+def is_one_line_function_declaration_line(line: str) -> bool:  # pylint:disable=invalid-name
     """
     Check if line contains function declaration.
     """
@@ -19,7 +63,7 @@ def does_line_contains_import_pdb(line: str) -> bool:
     """
     Check if line contains import pdb statement.
     """
-    return 'import pdb; pdb.set_trace()' in line
+    return IMPORT_PDB_LINE.strip().split() == line.split()
 
 
 def is_commended_function(line: str) -> bool:
@@ -81,3 +125,14 @@ def change_files_data(file_path: str, abs_path: str) -> None:
     """
     remove(file_path)
     move(abs_path, file_path)
+
+
+def check_if_file_is_ignored(file_path):
+    """
+    Check if file path is ignored.
+    """
+    path_parts = file_path.split('/')
+
+    for part in path_parts:
+        if part in INGORED_PATHS:
+            return True

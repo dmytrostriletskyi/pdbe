@@ -115,6 +115,7 @@ disable=
     bad-python3-import,
     deprecated-string-function,
     deprecated-str-translate-call,
+    inconsistent-return-statements,
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -304,7 +305,7 @@ function-name-hint=(([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
 function-rgx=(([a-z][a-z0-9_]{2,30})|(_[a-z0-9_]*))$
 
 # Good variable names which should always be accepted, separated by a comma
-good-names=i,j,k,ex,Run,_,app_name,logger,urlpatterns,application,server_port
+good-names=i,j,k,ex,Run,_,app_name,logger,urlpatterns,application,server_port,multiple_function_declaration_begging_spaces,stored_import_pdb_line_begging_spaces
 
 # Include a hint for the correct naming format with invalid-name
 include-naming-hint=no
