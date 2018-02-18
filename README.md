@@ -165,6 +165,24 @@ $ pdbe --checkout add336b6a204bb7b3abe76c296b67f92
 Remember, all history of commits and it's data stored in hided folder called `.pdbe`, so
 do not forget put following line `.pdbe/` to your `.gitignore`.
 
+## Configuration file
+
+`Pdbe` supports a configurations. Configurations have the following view.
+
+```
+debugger=ipdb
+ignore=migrations,fixtures,setup.py
+#ignore=contributions,test_view.py
+```
+
+To use the configuration file, create a file called `.pdberc` within home directory (`cd ~`).
+And for now there are two points are supported:
+
+1. `debugger` to set `ipdb` (only `ipdb` is supported for now).
+2. `ignore` to set directories (files in this directory will never be handled by pdbe) and files. Use `,` symbol to separate content of this setting.
+
+Also you are able to comment configuration line with `#` symbol.
+
 ## Development
 
 Install packages, that needed for testing:

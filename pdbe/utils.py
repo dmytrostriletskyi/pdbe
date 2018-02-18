@@ -2,11 +2,14 @@
 Pdbe utils.
 """
 from os import remove
-from os.path import expanduser
+from os.path import expanduser, exists
 from shutil import move
 
 
 def read_confs():
+    """
+    Read configuration file called `.pdberc`.
+    """
     debugger = 'import pdb; pdb.set_trace()\n'
     ignore = []
 
@@ -14,6 +17,12 @@ def read_confs():
     pdberc = home + '/.pdberc'
 
     confs = {}
+
+    if not exists(pdberc):
+        return {
+            'debugger': debugger,
+            'ignore': ignore,
+        }
 
     with open(pdberc, 'r') as file:
         content = [line.strip() for line in file.readlines()]
@@ -119,10 +128,11 @@ def change_files_data(file_path: str, abs_path: str) -> None:
 
 
 def check_if_file_is_ignored(file_path):
+    """
+    Check if file path is ignored.
+    """
     path_parts = file_path.split('/')
 
     for part in path_parts:
         if part in INGORED_PATHS:
             return True
-
-    return

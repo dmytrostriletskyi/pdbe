@@ -21,8 +21,7 @@ def put_import_pdb(file_path: str) -> None:
 
     with fdopen(fh, 'w') as new_file:
         with open(file_path) as old_file:
-            ignored = utils.check_if_file_is_ignored(old_file.name)
-            if ignored:
+            if utils.check_if_file_is_ignored(old_file.name):
                 return
 
             # for multiple function declaration
